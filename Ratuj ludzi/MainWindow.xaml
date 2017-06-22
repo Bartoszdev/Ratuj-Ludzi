@@ -25,7 +25,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="160"/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="startButton" Content="Start!" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Grid.Row="2"/>
+        <Button x:Name="startButton" Content="Start!" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Grid.Row="2" Click="startButton_Click"/>
         <StackPanel Grid.Column="2" Orientation="Vertical" Grid.Row="2">
             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center"><Run FontSize="18" Text="Ich unikaj"/><LineBreak/><Run/></TextBlock>
             <ContentControl Content="ContentControl" HorizontalAlignment="Center" VerticalAlignment="Center" Template="{DynamicResource EnemyTemplate}"/>
