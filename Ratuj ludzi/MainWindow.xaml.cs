@@ -15,9 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Windows.Controls.Primitives;
-
 using Windows.Foundation;
 using System.Windows.Threading;
+
 
 namespace Ratuj_ludzi
 {
@@ -51,7 +51,7 @@ namespace Ratuj_ludzi
 
         private void EndTheGame()
         {
-            if(!playArea.Children.Contains(gameOverText))
+            if (!playArea.Children.Contains(gameOverText))
             {
                 enemyTimer.Stop();
                 targetTimer.Stop();
@@ -65,7 +65,7 @@ namespace Ratuj_ludzi
         {
             AddEnemy();
         }
-        
+
         private void startButton_Click(object sender, RoutedEventArgs e)
         {
             StartGame();
@@ -73,7 +73,7 @@ namespace Ratuj_ludzi
 
         private void StartGame()
         {
-            
+
             human.IsHitTestVisible = true;
             humanCaptured = false;
             progressBar.Value = 0;
@@ -93,6 +93,16 @@ namespace Ratuj_ludzi
             AnimateEnemy(enemy, random.Next((int)playArea.ActualHeight - 100),
                 random.Next((int)playArea.ActualHeight - 100), "(Canvas.Top)");
             playArea.Children.Add(enemy);
+
+            enemy.MouseEnter += Enemy_MouseEnter;
+        }
+
+        private void Enemy_MouseEnter(object sender, MouseEventArgs e)
+        {
+            if (humanCaptured)
+
+                EndTheGame();
+
         }
 
         private void AnimateEnemy(ContentControl enemy, double from, double to, string propertyToAnimate)
@@ -119,7 +129,7 @@ namespace Ratuj_ludzi
 
         private void target_MouseEnter(object sender, MouseEventArgs e)
         {
-            if(targetTimer.IsEnabled && humanCaptured)
+            if (targetTimer.IsEnabled && humanCaptured)
             {
                 progressBar.Value = 0;
                 Canvas.SetLeft(target, random.Next(100, (int)playArea.ActualWidth - 100));
@@ -128,6 +138,38 @@ namespace Ratuj_ludzi
                 Canvas.SetTop(human, random.Next(100, (int)playArea.ActualHeight - 100));
                 humanCaptured = false;
                 human.IsHitTestVisible = true;
+            }
+        }
+
+        private void playArea_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (humanCaptured)
+            {
+                Point pointerPosition = e.GetPosition(null);
+                Point relativePosition = grid.TransformToVisual(playArea).Transform(pointerPosition);
+                if ((Math.Abs(relativePosition.X - Canvas.GetLeft(human)) > human.ActualWidth * 3)
+                    || (Math.Abs(relativePosition.Y - Canvas.GetTop(human)) > human.ActualHeight * 3))
+                {
+                    humanCaptured = false;
+                    human.IsHitTestVisible = true;
+                }
+                else
+                {
+                    Canvas.SetLeft(human, relativePosition.X - human.ActualWidth / 2);
+                    Canvas.SetTop(human, relativePosition.Y - human.ActualHeight / 2);
+                }
+
+
+
+            }
+
+        }
+
+        private void playArea_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (humanCaptured)
+            {
+                EndTheGame();
             }
         }
     }
